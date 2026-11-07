@@ -107,6 +107,29 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
 .type-card-footer .primary{min-width:116px;justify-content:space-between}
 @media(hover:hover){.catalog .card-rules:hover{background:transparent;color:var(--brand);text-decoration:underline;text-underline-offset:4px}}
 @media(max-width:360px){.type-card-footer .primary{min-width:104px;justify-content:center}}
+
+.level-description{margin:-3px 0 17px}
+.challenge-card{margin-top:24px;padding:24px;border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:14px;background:var(--panel)}
+.challenge-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.challenge-heading h2{font-size:23px;margin:7px 0 8px}
+.challenge-heading p{font-size:14px;color:var(--muted)}
+.challenge-heading>.icon{width:36px;height:36px;color:var(--gold);flex-shrink:0}
+.challenge-card>.fine-print{margin-top:12px}
+.challenge-rounds{margin-top:18px;border-top:1px solid var(--line)}
+.challenge-round{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.challenge-round>div{min-width:0}
+.challenge-round strong{font-size:14px}
+.challenge-round small{display:block;font-size:12px;color:var(--muted);line-height:1.9;margin-top:4px}
+.challenge-status{font-size:12px;color:var(--muted);flex-shrink:0}
+.challenge-round>.text-button{flex-shrink:0;white-space:nowrap}
+.challenge-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:18px}
+.challenge-footer label{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)}
+.challenge-summary{font-size:12px;line-height:1.8;color:var(--muted);margin-top:12px}
+.exam-toolbar{margin-top:30px}
+.exam-toolbar h2{font-size:20px}
+.exam-toolbar+.rounds{margin-top:16px}
+.challenge-reviews{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+@media(max-width:600px){.challenge-card{padding:18px}.challenge-heading h2{font-size:21px}.challenge-round{gap:12px}.challenge-footer{flex-wrap:wrap}.challenge-footer>.primary{flex:1;min-width:120px}.challenge-footer label{gap:7px}.challenge-reviews{justify-content:flex-start}.history-item:has(.challenge-reviews){align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -124,7 +147,8 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
         <section id="page-home" class="page">
           <div class="eyebrow">U8 训练营</div><div class="page-heading"><h1>题型练习</h1></div>
           <div id="continue-slot"></div>
-          <div class="catalog-toolbar"><p>全部题型 <span class="count-badge">7</span></p><label>难度<select id="level-select" aria-label="选择训练难度"><option value="0">启蒙</option><option value="1">巩固</option><option value="2">挑战</option></select></label></div>
+          <div class="catalog-toolbar"><p>全部题型 <span class="count-badge">7</span></p><label>难度<select id="level-select" aria-label="选择训练难度"></select></label></div>
+          <p id="level-description" class="fine-print level-description" hidden></p>
           <div class="catalog" id="catalog"></div>
         </section>
         <section id="page-play" class="page" hidden>
@@ -135,11 +159,13 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
           </div>
           <div class="play-heading"><div><h1 id="puzzle-title">数独练习</h1><div class="puzzle-meta" id="puzzle-meta"></div></div><div class="play-heading-actions"><button class="secondary" data-action="new"><span data-icon="shuffle"></span>换一题</button><button class="secondary" data-action="focus"><span data-icon="maximize"></span><span id="focus-label">专注模式</span></button></div></div>
           <div class="game-layout">
-            <section class="board-pane" aria-label="题目棋盘"><div class="mobile-typebar"><label class="sr-only" for="play-type">选择题型</label><select id="play-type"></select><button class="text-button" data-action="rules"><span data-icon="help"></span>规则</button></div><div class="board-card"><div class="board-heading"><span id="question-label">练习题</span><span class="level-tag" id="level-tag">启蒙</span></div><div id="board"></div><div class="selection-row"><span class="selected-label"><span class="selected-dot"></span><span id="selected-label"></span></span><span id="filled-label" class="tabular"></span></div></div><div class="chain-legend" id="chain-legend" hidden><span><i></i>实线项链</span><span><i class="dashed"></i>虚线项链</span></div><div id="game-message" class="game-message" role="status" aria-live="polite"></div></section>
+            <section class="board-pane" aria-label="题目棋盘"><div class="mobile-typebar"><label class="sr-only" for="play-type">选择题型</label><select id="play-type"></select><button class="text-button" data-action="rules"><span data-icon="help"></span>规则</button></div><div class="board-card"><div class="board-heading"><span id="question-label">练习题</span><span class="level-tag" id="level-tag">简单</span></div><div id="board"></div><div class="selection-row"><span class="selected-label"><span class="selected-dot"></span><span id="selected-label"></span></span><span id="filled-label" class="tabular"></span></div></div><div class="chain-legend" id="chain-legend" hidden><span><i></i>实线项链</span><span><i class="dashed"></i>虚线项链</span></div><div id="game-message" class="game-message" role="status" aria-live="polite"></div></section>
             <aside class="solve-controls" aria-label="数字和填写工具"><div class="number-pad" id="number-pad" aria-label="数字键盘"></div><div class="tool-row"><button class="tool-button" data-action="notes" aria-pressed="false"><span data-icon="pencil"></span><span>笔记</span></button><button class="tool-button" data-action="erase"><span data-icon="eraser"></span><span>清除</span></button><button class="tool-button" data-action="undo"><span data-icon="undo"></span><span>撤销</span></button><button class="tool-button" data-action="write"><span data-icon="pen"></span><span>手写</span></button><button class="tool-button hint-tool" data-action="hint"><span data-icon="bulb"></span><span>提示</span></button></div><div class="desktop-coach"><button class="disclosure-button" data-action="steps">解题思路<span aria-hidden="true">›</span></button><button class="disclosure-button" data-action="answer">完整答案<span aria-hidden="true">›</span></button><button class="disclosure-button" data-action="rules">题目规则<span aria-hidden="true">›</span></button></div><div class="safe-area" aria-hidden="true"></div></aside>
           </div>
         </section>
-        <section id="page-exams" class="page" hidden><div class="eyebrow">U8 · 三局训练</div><div class="page-heading"><h1>模拟比赛</h1></div><div class="notice"><span data-icon="clock"></span><p>每局 10 分钟，离开页面仍计时。交卷后可查看答案与解析。</p></div><div class="rounds" id="rounds"></div><div id="exam-results"></div></section>
+        <section id="page-exams" class="page" hidden><div class="eyebrow">U8 · 三局训练</div><div class="page-heading"><h1>模拟比赛</h1></div><div class="notice"><span data-icon="clock"></span><p>每局 10 分钟，离开页面仍计时。交卷后可查看答案与解析。</p></div>
+          <section class="challenge-card" aria-labelledby="challenge-title"><div class="challenge-heading"><div><div class="eyebrow">备赛训练</div><h2 id="challenge-title">厦门 U8 挑战赛</h2><p>3 局 · 24 题 · 每局 10 分钟</p></div><span data-icon="flag"></span></div><p class="fine-print">按你提供的 U8 题型表随机出题，为备赛训练题。</p><div id="challenge-rounds" class="challenge-rounds"></div><div class="challenge-footer"><label>挑战难度<select id="challenge-level" aria-label="选择挑战赛难度"></select></label><button class="primary" data-action="start-challenge">生成挑战赛</button></div><p id="challenge-summary" class="challenge-summary" role="status"></p></section>
+          <div class="catalog-toolbar exam-toolbar"><h2>单局模拟</h2><label>难度<select id="exam-level-select" aria-label="选择单局模拟难度"></select></label></div><div class="rounds" id="rounds"></div><div id="challenge-history"></div><div id="exam-results"></div></section>
         <section id="page-progress" class="page" hidden><div class="page-heading"><h1>学习档案</h1></div><div id="progress-stats" class="stats"></div><div class="backup-panel"><div><h2>进度备份</h2><p>换设备可导入备份；清理浏览器数据可能删除本机进度。</p></div><div class="backup-actions"><button class="secondary" data-action="export"><span data-icon="download"></span>导出</button><button class="secondary" data-action="import"><span data-icon="upload"></span>导入</button></div></div><div class="progress-toolbar"><h2>练习记录</h2><label>筛选<select id="history-filter"><option value="all">全部记录</option><option value="unfinished">未完成</option><option value="review">需要复习</option><option value="completed">已完成</option></select></label></div><div id="history-list" class="history-list"></div><p class="fine-print">本机保留最近 200 道题、30 局模拟记录。</p></section>
       </main>
     </div>
@@ -159,7 +185,16 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
     { id: 'kenken4', name: '四阶肯肯加减', n: 4, round: 2, focus: '把加减结果和行列联系起来', rules: ['填入 1～4，每行、每列不重复；没有标准宫。', '加法笼内的数字相加等于角标；两格减法笼用大数减小数等于角标。', '单格笼直接填角标数字。算术笼内没有额外的不重复要求，仍须遵守行列规则。'], mark: '本训练的减法笼均为两格；如 1−，表示两个数相差 1。' },
     { id: 'kenken5', name: '五阶肯肯加减', n: 5, round: 2, focus: '先看笼目标，再用行列排除', rules: ['填入 1～5，每行、每列不重复；没有标准宫。', '加法笼内的数字相加等于角标；两格减法笼用大数减小数等于角标。', '单格笼直接填角标数字。算术笼内没有额外的不重复要求。'], mark: '例如 7+ 可以由 2 和 5、3 和 4 组成，再根据行列排除。' }
   ];
-  const LEVELS = ['启蒙', '巩固', '挑战'];
+  const LEVELS = ['简单', '中等', '较难', '困难', '专家', '大师'];
+  const LEVEL_CONFIG = [
+    { clues: .55, signs: 8, singles: .25, pairs: .83, maxCage: 3, samples: 1, technique: 1 },
+    { clues: .43, signs: 6, singles: .17, pairs: .83, maxCage: 3, samples: 1, technique: 1 },
+    { clues: .32, signs: 5, singles: .10, pairs: .83, maxCage: 3, samples: 1, technique: 1 },
+    { clues: .25, signs: 4, singles: .06, pairs: .60, maxCage: 3, samples: 4, technique: 2 },
+    { clues: .18, signs: 3, singles: .02, pairs: .40, maxCage: 4, samples: 10, technique: 3 },
+    { clues: .10, signs: 2, singles: 0, pairs: .24, maxCage: 4, samples: 20, technique: 4 }
+  ];
+  const normalizeLevel = value => Number.isInteger(Number(value)) ? Math.max(0, Math.min(LEVELS.length - 1, Number(value))) : 0;
   const ROUND_PLANS = [
     { name: '标准数独', counts: [['standard4', 4], ['standard6', 6]] },
     { name: '趣味变型', counts: [['inequality4', 2], ['antiking6', 3], ['necklace5', 3]] },
@@ -216,10 +251,10 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
     });
     return { p, n, meta, groups, peers, diagonals, cages };
   }
-  function domains(ctx, board) {
+  function domains(ctx, board, allowed, failure = {}) {
     const { n, peers, cages, p } = ctx;
-    for (let i = 0; i < n * n; i++) if (board[i] && [...peers[i]].some(j => board[j] === board[i])) return null;
-    const ds = board.map((v, i) => v ? [v] : range(n).map(x => x + 1).filter(x => ![...peers[i]].some(j => board[j] === x)));
+    for (let i = 0; i < n * n; i++) if (board[i] && [...peers[i]].some(j => board[j] === board[i])) { failure.text = `${position(i,n)}的 ${board[i]} 与关联格重复`; return null; }
+    const ds = board.map((v, i) => (v ? [v] : range(n).map(x => x + 1).filter(x => ![...peers[i]].some(j => board[j] === x))).filter(x => !allowed || allowed[i].includes(x)));
     let changed = true;
     while (changed) {
       changed = false;
@@ -232,7 +267,9 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
         const good = cage.tuples.filter(tuple => cage.cells.every((i, k) => ds[i].includes(tuple[k])));
         cage.cells.forEach((i, k) => narrow(i, ds[i].filter(v => good.some(tuple => tuple[k] === v))));
       }
-      if (ds.some(d => !d.length)) return null;
+      const empty = ds.findIndex(d => !d.length);
+      if (empty >= 0) { failure.text = `${position(empty,n)}已没有符合行列及本题规则的候选数`; return null; }
+      for (const g of ctx.groups) for (let v = 1; v <= n; v++) if (!g.cells.some(i => ds[i].includes(v))) { failure.text = `${g.name}已没有位置可以填 ${v}`; return null; }
     }
     return ds;
   }
@@ -275,29 +312,107 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
     const ending = hiddenGroup ? `在${hiddenGroup.name}里，数字 ${value} 只有本格可以放，所以填 ${value}。` : `按这些规则排除后，本格只剩 ${value}，所以填 ${value}。`;
     return { cell: index, value, kind: hiddenGroup ? 'hidden-single' : cage ? 'arithmetic' : 'single', title: hiddenGroup ? '找唯一的位置' : cage ? '算术笼与行列一起看' : '排除已经出现的数字', observation: `先看${point}。${ctx.meta.focus}。`, facts, text: `${facts.join('；')}。${ending}`, refs: references };
   }
-  function logicalTrace(p, start = p.givens) {
-    const ctx = prepare(p), board = start.slice(), steps = [];
-    while (board.some(v => !v)) {
-      const ds = domains(ctx, board); if (!ds) return null;
-      let index = -1, value, group;
-      for (let i = 0; i < board.length; i++) if (!board[i] && ds[i].length === 1) { index = i; value = ds[i][0]; break; }
-      if (index < 0) {
-        outer: for (const g of ctx.groups) for (let v = 1; v <= p.n; v++) {
-          if (g.cells.some(i => board[i] === v)) continue;
-          const spots = g.cells.filter(i => !board[i] && ds[i].includes(v));
-          if (spots.length === 1) { index = spots[0]; value = v; group = g; break outer; }
+  function findSingle(ctx, board, ds) {
+    for (let i = 0; i < board.length; i++) if (!board[i] && ds[i].length === 1) return { index: i, value: ds[i][0] };
+    for (const group of ctx.groups) for (let value = 1; value <= ctx.n; value++) {
+      if (group.cells.some(i => board[i] === value)) continue;
+      const spots = group.cells.filter(i => !board[i] && ds[i].includes(value));
+      if (spots.length === 1) return { index: spots[0], value, group };
+    }
+    return null;
+  }
+  function candidateDeduction(ctx, board, ds) {
+    const where = cells => cells.map(i => position(i,ctx.n)).join('、');
+    for (const g of ctx.groups) {
+      const open = g.cells.filter(i => !board[i]);
+      for (const count of [2,3]) {
+        const pool = open.filter(i => ds[i].length <= count);
+        function choose(chosen, start) {
+          if (chosen.length === count) {
+            const values = [...new Set(chosen.flatMap(i => ds[i]))].sort();
+            if (values.length !== count) return null;
+            const removed = open.filter(i => !chosen.includes(i)).flatMap(cell => ds[cell].filter(v => values.includes(v)).map(value => ({cell,value})));
+            if (removed.length) return { kind:'subset',rank:2,refs:g.cells,removed,text:`${g.name}中，${where(chosen)}这 ${count} 格的候选数合起来只有 ${values.join('、')}，这几个数必须由这些格子占用，因此可从同组其他格子中排除它们。` };
+            return null;
+          }
+          for (let k = start; k < pool.length; k++) { const found = choose([...chosen,pool[k]],k+1); if (found) return found; }
+          return null;
+        }
+        const found = choose([],0); if (found) return found;
+      }
+      for (let v = 1; v <= ctx.n; v++) {
+        if (g.cells.some(i => board[i] === v)) continue;
+        const spots = open.filter(i => ds[i].includes(v));
+        if (spots.length < 2) continue;
+        for (const other of ctx.groups) if (other !== g && spots.every(i => other.cells.includes(i))) {
+          const removed = other.cells.filter(i => !g.cells.includes(i)&&!board[i]&&ds[i].includes(v)).map(cell=>({cell,value:v}));
+          if (removed.length) return {kind:'locked',rank:2,refs:[...g.cells,...other.cells],removed,text:`${g.name}的 ${v} 只可能放在${where(spots)}，它们又都位于${other.name}，所以可从后者的其他格子中排除 ${v}。`};
         }
       }
-      if (index < 0) return null;
-      steps.push(reason(ctx, board, ds, index, value, group)); board[index] = value;
     }
-    return domains(ctx, board) ? steps : null;
+    return null;
+  }
+  // A refutation is built from constraints alone; neither the stored answer nor a guessed answer is used.
+  function refutation(ctx, initial, allowed, budget = { left: 240 }, depth = 4) {
+    if (--budget.left < 0) return null;
+    const board = initial.slice(), forced = [], failure = {};
+    let ds;
+    while (true) {
+      ds = domains(ctx,board,allowed,failure);
+      if (!ds) return { forced, conflict:failure.text };
+      const next = findSingle(ctx,board,ds); if (!next) break;
+      forced.push({cell:next.index,value:next.value});board[next.index]=next.value;
+    }
+    if (board.every(Boolean)) return null;
+    if (depth <= 0) return null;
+    const cells = range(board.length).filter(i=>!board[i]).sort((a,b)=>ds[a].length-ds[b].length),cell=cells[0],branches=[];
+    for (const value of ds[cell]) {
+      const next=board.slice();next[cell]=value;const proof=refutation(ctx,next,allowed,budget,depth-1);
+      if (!proof) return null;
+      branches.push({cell,value,proof});
+    }
+    return {forced,branches};
+  }
+  function proofText(proof,n) {
+    const forced=proof.forced.length?`依次可确定 ${proof.forced.map(s=>`${position(s.cell,n)}=${s.value}`).join('，')}。`:'';
+    return forced+(proof.conflict?`此时${proof.conflict}，发生矛盾。`:proof.branches.map(b=>`若${position(b.cell,n)}填 ${b.value}：${proofText(b.proof,n)}`).join('')+'以上候选全部矛盾。');
+  }
+  function logicalTrace(p, start = p.givens, technique = 4) {
+    const ctx=prepare(p),board=start.slice(),steps=[];let allowed=null,pending=[];
+    while (board.some(v=>!v)) {
+      const ds=domains(ctx,board,allowed);if(!ds)return null;
+      const next=findSingle(ctx,board,ds);
+      if(next){
+        const step=reason(ctx,board,ds,next.index,next.value,next.group);step.rank=next.group?1:0;
+        if(pending.length){step.deductions=pending;step.rank=Math.max(...pending.map(d=>d.rank));step.title=pending.some(d=>d.kind==='contradiction')?'反证排除候选数':'候选数组与区块排除';step.facts=[...pending.map(d=>d.text),...step.facts];step.text=pending.map(d=>d.text).join('')+step.text;step.refs=[...new Set([...step.refs,...pending.flatMap(d=>d.refs)])];pending=[];}
+        steps.push(step);board[next.index]=next.value;continue;
+      }
+      if(technique<2)return null;
+      let deduction=candidateDeduction(ctx,board,ds);
+      if(!deduction&&technique>=3){
+        const cells=range(board.length).filter(i=>!board[i]).sort((a,b)=>ds[a].length-ds[b].length);
+        outer:for(const cell of cells)for(const value of ds[cell]){
+          const test=board.slice();test[cell]=value;const proof=refutation(ctx,test,ds,{left:240},technique>=4?4:0);
+          if(proof){deduction={kind:'contradiction',rank:proof.branches?4:3,refs:range(board.length),removed:[{cell,value}],proof,text:`先假设${position(cell,p.n)}填 ${value}。${proofText(proof,p.n)}所以该假设不成立，本格不能填 ${value}。`};break outer;}
+        }
+      }
+      if(!deduction)return null;
+      allowed=ds.map(d=>d.slice());for(const {cell,value} of deduction.removed)allowed[cell]=allowed[cell].filter(v=>v!==value);pending.push(deduction);
+    }
+    return domains(ctx,board,allowed)?steps:null;
+  }
+  function difficulty(p) {
+    const ds=domains(prepare(p),p.givens),steps=p.steps||logicalTrace(p)||[],rank=Math.max(0,...steps.map(s=>s.rank||0));
+    const advanced=steps.filter(s=>(s.rank||0)>=2).length,hidden=steps.filter(s=>s.kind==='hidden-single').length,blanks=p.givens.filter(v=>!v).length;
+    const ambiguity=ds?ds.reduce((sum,d,i)=>sum+(p.givens[i]?0:d.length*d.length),0):0;
+    const arithmetic=(p.cages||[]).reduce((sum,c)=>sum+c.cells.length*c.cells.length,0);
+    return {rank,advanced,hidden,blanks,score:rank*10000+advanced*300+hidden*15+blanks*12+ambiguity+arithmetic};
   }
   function randomCages(n, solution, rng, level) {
-    const remaining = new Set(range(n * n)), cages = [];
+    const remaining = new Set(range(n * n)), cages = [],config=LEVEL_CONFIG[level];
     while (remaining.size) {
       const start = Math.min(...remaining); remaining.delete(start); const cells = [start];
-      const r = rng(), size = r < [0.25, 0.17, 0.1][level] ? 1 : r < 0.83 ? 2 : 3;
+      const r = rng(), size = r < config.singles ? 1 : r < config.pairs ? 2 : config.maxCage===4&&rng()<.6 ? 4 : 3;
       while (cells.length < size) {
         const neighbors = [...new Set(cells.flatMap(i => { const row = Math.floor(i / n), col = i % n; return [[row-1,col],[row+1,col],[row,col-1],[row,col+1]].filter(([rr,cc]) => rr>=0&&rr<n&&cc>=0&&cc<n).map(([rr,cc]) => rr*n+cc).filter(j => remaining.has(j)); }))];
         if (!neighbors.length) break; const next = neighbors[Math.floor(rng() * neighbors.length)]; cells.push(next); remaining.delete(next);
@@ -308,40 +423,53 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
     }
     return cages;
   }
+  function randomCompletion(p,rng) {
+    const ctx=prepare(p),board=Array(p.n*p.n).fill(0);
+    function visit(){
+      const ds=domains(ctx,board);if(!ds)return false;
+      const empty=shuffled(range(board.length).filter(i=>!board[i]),rng).sort((a,b)=>ds[a].length-ds[b].length);
+      if(!empty.length)return true;const cell=empty[0];
+      for(const value of shuffled(ds[cell],rng)){board[cell]=value;if(visit())return true;}board[cell]=0;return false;
+    }
+    return visit()?board:null;
+  }
   function generate(typeId, level = 0, seed = String(Date.now()), exclude = []) {
     const meta = typeOf(typeId); if (!meta) throw new Error('不支持的题型');
-    level = Math.max(0, Math.min(2, Number(level) || 0)); const rng = random(seed), n = meta.n, excluded = new Set(exclude);
+    level = normalizeLevel(level); const rng = random(seed), n = meta.n, excluded = new Set(exclude),config=LEVEL_CONFIG[level];let best=null,collected=0;
     for (let attempt = 0; attempt < 100; attempt++) {
       let base = n === 4 ? FOUR : typeId === 'antiking6' ? ANTI : range(n * n).map(i => { const r = Math.floor(i/n), c=i%n; return n===6 ? (r*3+Math.floor(r/2)+c)%n+1 : (r+2*c)%n+1; });
       const digits = shuffled(range(n).map(i=>i+1), rng), mirrorR=rng()<0.5, mirrorC=rng()<0.5, rotate=n!==6&&rng()<0.5;
       const map = i => { let r=Math.floor(i/n), c=i%n; if(mirrorR)r=n-1-r;if(mirrorC)c=n-1-c;if(rotate)[r,c]=[c,n-1-r];return r*n+c; };
-      const solution = Array(n*n).fill(0);base.forEach((v,i)=>solution[map(i)]=digits[v-1]);
+      let solution = Array(n*n).fill(0);base.forEach((v,i)=>solution[map(i)]=digits[v-1]);
       const p = { type: typeId, n, level, seed: String(seed), givens: solution.slice(), solution };
       if(typeId==='necklace5')p.chains=CHAINS.map(chain=>chain.map(map));
+      if(level>=3&&(typeId==='standard6'||typeId==='necklace5')){solution=randomCompletion(p,rng);if(!solution)continue;p.solution=solution;p.givens=solution.slice();}
       if(typeId==='inequality4'){
         const pairs=[];for(let r=0;r<n;r++)for(let c=0;c<n;c++){const i=r*n+c;if(c<n-1)pairs.push([i,i+1]);if(r<n-1)pairs.push([i,i+n]);}
-        p.less=shuffled(pairs,rng).slice(0,[8,6,5][level]).map(([a,b])=>solution[a]<solution[b]?[a,b]:[b,a]);
+        p.less=shuffled(pairs,rng).slice(0,config.signs).map(([a,b])=>solution[a]<solution[b]?[a,b]:[b,a]);
       }
       if(typeId.startsWith('kenken')){
         for(let trial=0;trial<220;trial++){
           p.cages=randomCages(n,solution,rng,level);p.givens=Array(n*n).fill(0);
           if(!p.cages.some(c=>c.op==='+')||!p.cages.some(c=>c.op==='-'))continue;
-          const steps=logicalTrace(p);if(!steps)continue;
-          if(solve(p).length!==1)continue;p.steps=steps;break;
+          if(solve(p).length!==1)continue;
+          const steps=logicalTrace(p,p.givens,config.technique);if(!steps)continue;p.steps=steps;break;
         }
         if(!p.steps)continue;
       }else{
-        const target=Math.max(3,Math.round(n*n*[0.55,0.43,0.32][level]));
+        const target=Math.max(typeId==='inequality4'?1:3,Math.round(n*n*config.clues));
         for(const i of shuffled(range(n*n),rng)){
           if(p.givens.filter(Boolean).length<=target)break;
           const old=p.givens[i];p.givens[i]=0;
-          if(!logicalTrace(p)||solve(p).length!==1)p.givens[i]=old;
+          if(solve(p).length!==1||!logicalTrace(p,p.givens,config.technique))p.givens[i]=old;
         }
-        p.steps=logicalTrace(p);if(!p.steps||!p.steps.length)continue;
+        p.steps=logicalTrace(p,p.givens,config.technique);if(!p.steps||!p.steps.length)continue;
       }
       p.id=signature(p);if(excluded.has(p.id))continue;
-      p.createdAt=Date.now();p.version=1;return p;
+      p.difficulty=difficulty(p);if(!best||p.difficulty.score>best.difficulty.score)best=p;
+      if(++collected>=config.samples)break;
     }
+    if(best){best.createdAt=Date.now();best.version=1;return best;}
     throw new Error('暂时没找到合适的新题，请再试一次。已有进度不会丢失。');
   }
   function validShape(p) {
@@ -354,7 +482,7 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
     if(p.type==='inequality4'&&(!Array.isArray(p.less)||p.less.length<1||p.less.length>24||!p.less.every(pair=>cells(pair,2)&&(Math.floor(pair[0]/n)===Math.floor(pair[1]/n)&&Math.abs(pair[0]-pair[1])===1||Math.abs(pair[0]-pair[1])===n))))return false;
     if(p.type.startsWith('kenken')){
       if(!Array.isArray(p.cages)||p.cages.length<2||p.cages.length>size)return false;
-      const all=[];for(const c of p.cages){if(!c||!Array.isArray(c.cells)||c.cells.length<1||c.cells.length>3||!cells(c.cells,c.cells.length)||!Number.isInteger(c.target)||c.target<0||c.target>3*n||!['+','-','='].includes(c.op)||c.op==='-'&&c.cells.length!==2||c.op==='='&&c.cells.length!==1)return false;
+      const all=[];for(const c of p.cages){if(!c||!Array.isArray(c.cells)||c.cells.length<1||c.cells.length>4||!cells(c.cells,c.cells.length)||!Number.isInteger(c.target)||c.target<0||c.target>4*n||!['+','-','='].includes(c.op)||c.op==='-'&&c.cells.length!==2||c.op==='='&&c.cells.length!==1)return false;
         const visited=new Set([c.cells[0]]);let changed=true;while(changed){changed=false;for(const i of c.cells)if(!visited.has(i)&&[...visited].some(j=>Math.abs(Math.floor(i/n)-Math.floor(j/n))+Math.abs(i%n-j%n)===1)){visited.add(i);changed=true;}}if(visited.size!==c.cells.length)return false;all.push(...c.cells);
       }if(all.length!==size||new Set(all).size!==size)return false;
     }
@@ -366,11 +494,11 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
   }
   function sanitize(p) {
     if(!validShape(p))throw new Error('备份中含有不合法的题目');
-    const out={version:1,type:p.type,n:p.n,level:Number.isInteger(p.level)&&p.level>=0&&p.level<=2?p.level:0,seed:typeof p.seed==='string'?p.seed.slice(0,100):'',givens:p.givens.slice(),solution:p.solution.slice(),createdAt:Number.isFinite(p.createdAt)?p.createdAt:Date.now()};
+    const out={version:1,type:p.type,n:p.n,level:normalizeLevel(p.level),seed:typeof p.seed==='string'?p.seed.slice(0,100):'',givens:p.givens.slice(),solution:p.solution.slice(),createdAt:Number.isFinite(p.createdAt)?p.createdAt:Date.now()};
     if(p.less)out.less=p.less.map(pair=>pair.slice());if(p.chains)out.chains=p.chains.map(chain=>chain.slice());if(p.cages)out.cages=p.cages.map(c=>({cells:c.cells.slice(),op:c.op,target:c.target}));
-    if(!validate(out))throw new Error('备份中的题目没有通过规则和唯一解校验');out.steps=logicalTrace(out);if(!out.steps)throw new Error('这道题暂时无法提供完整逻辑讲解');out.id=signature(out);return out;
+    if(!validate(out))throw new Error('备份中的题目没有通过规则和唯一解校验');out.steps=logicalTrace(out);if(!out.steps)throw new Error('这道题暂时无法提供完整逻辑讲解');out.difficulty=difficulty(out);out.id=signature(out);return out;
   }
-  const api={TYPES,LEVELS,ROUND_PLANS,typeOf,random,shuffled,signature,position,prepare,domains,solve,logicalTrace,generate,validate,sanitize,validShape,clone};
+  const api={TYPES,LEVELS,ROUND_PLANS,normalizeLevel,difficulty,typeOf,random,shuffled,signature,position,prepare,domains,solve,logicalTrace,generate,validate,sanitize,validShape,clone};
   scope.SudokuEngine=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
 </script>
@@ -378,13 +506,13 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
  'use strict';
  const KEY='little-sudoku-u8-v1',RECOVERY_KEY=KEY+'-recovery',FORMAT='little-sudoku-progress',MAX_RECORDS=200;
  const EXAM_DURATION_MS=10*60*1000,LEGACY_EXAM_DURATION_MS=30*60*1000;
- const fresh=()=>({version:1,records:[],exams:[],activeId:null,activeExamId:null,preferences:{level:0},updatedAt:Date.now()});
+ const fresh=()=>({version:1,records:[],exams:[],challenges:[],activeId:null,activeExamId:null,preferences:{level:0,challengeLevel:3},updatedAt:Date.now()});
  const finite=(n,max=1e12)=>Number.isFinite(n)&&n>=0&&n<=max;
  function cleanRecord(raw,engine,full=true){
   if(!raw||typeof raw!=='object')throw new Error('学习记录格式不正确');
   const p=full?engine.sanitize(raw.puzzle):engine.clone(raw.puzzle);
   if(!engine.validShape(p)||!Array.isArray(raw.values)||raw.values.length!==p.n*p.n||!raw.values.every((v,i)=>Number.isInteger(v)&&v>=0&&v<=p.n&&(!p.givens[i]||p.givens[i]===v)))throw new Error('填写数据不符合题目');
-  if(!full){if(!engine.validate(p,false))throw new Error('本地题目规则不完整');p.id=engine.signature(p);p.steps=engine.logicalTrace(p);if(!p.steps)throw new Error('本地题目缺少逻辑解法');}
+  if(!full){if(!engine.validate(p,false))throw new Error('本地题目规则不完整');p.level=engine.normalizeLevel(p.level);p.id=engine.signature(p);p.steps=engine.logicalTrace(p);if(!p.steps)throw new Error('本地题目缺少逻辑解法');p.difficulty=engine.difficulty(p);}
   const notes={};Object.entries(raw.notes||{}).forEach(([key,list])=>{const i=Number(key);if(Number.isInteger(i)&&i>=0&&i<p.n*p.n&&!p.givens[i]&&Array.isArray(list)&&list.length<=p.n&&list.every(v=>Number.isInteger(v)&&v>=1&&v<=p.n))notes[i]=[...new Set(list)].sort();});
   const id=typeof raw.id==='string'&&/^[a-zA-Z0-9_-]{1,120}$/.test(raw.id)?raw.id:p.id;
   return{id,puzzle:p,values:raw.values.slice(),notes,selected:Number.isInteger(raw.selected)&&raw.selected>=0&&raw.selected<p.n*p.n?raw.selected:p.givens.indexOf(0),noteMode:!!raw.noteMode,elapsed:finite(raw.elapsed,2592000000)?raw.elapsed:0,hints:finite(raw.hints,100000)?raw.hints:0,wrongChecks:finite(raw.wrongChecks,100000)?raw.wrongChecks:0,answerSeen:!!raw.answerSeen,createdAt:finite(raw.createdAt,1e14)?raw.createdAt:Date.now(),updatedAt:finite(raw.updatedAt,1e14)?raw.updatedAt:Date.now(),completedAt:finite(raw.completedAt,1e14)&&raw.completedAt>0&&raw.values.every((v,i)=>v===p.solution[i])?raw.completedAt:null,examId:typeof raw.examId==='string'?raw.examId.slice(0,100):null,history:[],redo:[]};
@@ -399,20 +527,33 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
    const plan=engine.ROUND_PLANS[e.round],wanted=plan.counts.flatMap(([type,n])=>Array(n).fill(type));
    if(e.ids.length!==wanted.length||e.ids.some((id,i)=>next.records.find(r=>r.id===id).puzzle.type!==wanted[i]))continue;
    const submittedAt=finite(e.submittedAt,1e14)&&e.submittedAt>0?e.submittedAt:null;
+   if(next.exams.some(x=>x.id===e.id))continue;
    next.exams.push({id:e.id,round:e.round,ids:e.ids.slice(),startedAt:e.startedAt,endsAt:submittedAt?e.endsAt:e.startedAt+EXAM_DURATION_MS,submittedAt,reason:e.reason==='timeout'?'timeout':'manual'});
+  }
+  // A challenge keeps completed rounds together. Its next timer starts only when that round is opened.
+  for(const c of Array.isArray(raw.challenges)?raw.challenges.slice(-10):[]){
+   if(!c||typeof c.id!=='string'||c.id.length>100||!Number.isInteger(c.level)||c.level<3||c.level>=engine.LEVELS.length||!finite(c.createdAt,1e14)||!Array.isArray(c.examIds)||!c.examIds.length||c.examIds.length>3||new Set(c.examIds).size!==c.examIds.length||next.challenges.some(x=>x.id===c.id))continue;
+   const rounds=c.examIds.map(id=>next.exams.find(e=>e.id===id));
+   if(rounds.some((e,i)=>!e||e.round!==i||i<rounds.length-1&&!e.submittedAt||e.challengeId||e.ids.some(id=>next.records.find(r=>r.id===id).puzzle.level!==c.level)))continue;
+   next.challenges.push({id:c.id,level:c.level,createdAt:c.createdAt,examIds:c.examIds.slice()});rounds.forEach(e=>e.challengeId=c.id);
   }
   next.activeId=ids.has(raw.activeId)?raw.activeId:null;
   next.activeExamId=next.exams.some(e=>e.id===raw.activeExamId)?raw.activeExamId:null;
-  next.preferences.level=Number.isInteger(raw.preferences?.level)&&raw.preferences.level>=0&&raw.preferences.level<=2?raw.preferences.level:0;
+  next.preferences.level=engine.normalizeLevel(raw.preferences?.level);
+  next.preferences.challengeLevel=Number.isInteger(raw.preferences?.challengeLevel)&&raw.preferences.challengeLevel>=3&&raw.preferences.challengeLevel<engine.LEVELS.length?raw.preferences.challengeLevel:3;
   next.updatedAt=finite(raw.updatedAt,1e14)?raw.updatedAt:Date.now();return next;
  }
  function newRecord(puzzle,examId=null){const suffix=scope.crypto?.randomUUID?scope.crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);return{id:puzzle.id+'-'+suffix,puzzle,values:puzzle.givens.slice(),notes:{},selected:puzzle.steps[0]?.cell??puzzle.givens.indexOf(0),noteMode:false,elapsed:0,hints:0,wrongChecks:0,answerSeen:false,createdAt:Date.now(),updatedAt:Date.now(),completedAt:null,examId,history:[],redo:[]};}
  function compact(state){
   const out=JSON.parse(JSON.stringify(state));
   out.records=out.records.map(r=>({...r,history:[],redo:[]}));
-  const keep=new Set(out.exams.filter(e=>!e.submittedAt).flatMap(e=>e.ids));if(out.activeId)keep.add(out.activeId);
+  const protectedExams=new Set((out.challenges||[]).filter(c=>c.examIds.length<3||c.examIds.some(id=>out.exams.some(e=>e.id===id&&!e.submittedAt))).flatMap(c=>c.examIds));
+  const keep=new Set(out.exams.filter(e=>!e.submittedAt||protectedExams.has(e.id)).flatMap(e=>e.ids));if(out.activeId)keep.add(out.activeId);
   while(out.records.length>MAX_RECORDS){const i=out.records.findIndex(r=>!keep.has(r.id));if(i<0)break;out.records.splice(i,1);}
-  const available=new Set(out.records.map(r=>r.id));out.exams=out.exams.filter(e=>e.ids.every(id=>available.has(id))).slice(-30);return out;
+  const available=new Set(out.records.map(r=>r.id)),availableExams=out.exams.filter(e=>e.ids.every(id=>available.has(id))),pinned=availableExams.filter(e=>!e.submittedAt||protectedExams.has(e.id));
+  const slots=Math.max(0,30-pinned.length);out.exams=[...(slots?availableExams.filter(e=>!pinned.includes(e)).slice(-slots):[]),...pinned];
+  out.challenges=(out.challenges||[]).filter(c=>c.examIds.every(id=>out.exams.some(e=>e.id===id))).slice(-10);
+  out.exams.forEach(e=>{if(e.challengeId&&!out.challenges.some(c=>c.id===e.challengeId&&c.examIds.includes(e.id)))delete e.challengeId;});return out;
  }
  function load(storage,engine){
   let value=null;
@@ -437,7 +578,9 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
   const out=fresh(),records=new Map();for(const r of [...current.records,...incoming.records]){const old=records.get(r.id);if(!old||r.updatedAt>old.updatedAt)records.set(r.id,r);}
   out.records=[...records.values()].sort((a,b)=>a.updatedAt-b.updatedAt);
   const exams=new Map();for(const e of [...current.exams,...incoming.exams]){const old=exams.get(e.id);if(!old||(e.submittedAt||0)>(old.submittedAt||0))exams.set(e.id,e);}
-  out.exams=[...exams.values()];out.activeId=current.activeId||incoming.activeId;out.activeExamId=current.activeExamId||incoming.activeExamId;out.preferences={...current.preferences};return compact(out);
+  out.exams=[...exams.values()];
+  const challenges=new Map();for(const c of [...(current.challenges||[]),...(incoming.challenges||[])]){const old=challenges.get(c.id);if(!old||c.examIds.length>old.examIds.length||c.examIds.length===old.examIds.length&&c.examIds.reduce((sum,id)=>sum+(exams.get(id)?.submittedAt||0),0)>old.examIds.reduce((sum,id)=>sum+(exams.get(id)?.submittedAt||0),0))challenges.set(c.id,c);}
+  out.challenges=[...challenges.values()];out.activeId=current.activeId||incoming.activeId;out.activeExamId=current.activeExamId||incoming.activeExamId;out.preferences={...current.preferences};return compact(out);
  }
  const api={KEY,RECOVERY_KEY,FORMAT,MAX_RECORDS,EXAM_DURATION_MS,fresh,newRecord,cleanRecord,cleanState,load,save,compact,exportData,parseBackup,merge};scope.SudokuStorage=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
@@ -508,6 +651,8 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
  const record=()=>state.records.find(r=>r.id===state.activeId)||null;
  const examFor=r=>r?.examId?state.exams.find(e=>e.id===r.examId):null;
  const liveExam=()=>state.exams.find(e=>!e.submittedAt)||null;
+ const challengeFor=e=>e?.challengeId?state.challenges.find(c=>c.id===e.challengeId):null;
+ const unfinishedChallenge=()=>state.challenges.slice().reverse().find(c=>c.examIds.length<3||c.examIds.some(id=>!state.exams.find(e=>e.id===id)?.submittedAt));
  const locked=r=>!!(r?.completedAt||examFor(r)?.submittedAt);
  const inExam=r=>!!(examFor(r)&&!examFor(r).submittedAt);
  const sortedRecords=()=>state.records.slice().sort((a,b)=>b.updatedAt-a.updatedAt);
@@ -518,7 +663,7 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
  const date=ts=>new Date(ts).toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
  function toast(text){$('#toast').textContent=text;$('#toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').hidden=true,3600);}
  function warning(text){const n=$('#storage-warning');n.replaceChildren(el('span','',text));if(initial.recoveryRaw)n.append(button('下载原始记录','export-recovery','secondary compact','download'));n.append(button('导出当前进度','export','secondary compact','download'));n.hidden=false;$('#save-status').textContent='请查看保存提示';}
- function flush(){clearTimeout(saveTimer);if(initial.blocked){warning(initial.warning);return false;}const result=S.save(local,state);if(!result.ok){warning(result.warning);return false;}lastStorageJSON=JSON.stringify(result.state);state.records=state.records.filter(r=>result.state.records.some(s=>s.id===r.id));state.exams=state.exams.filter(e=>result.state.exams.some(s=>s.id===e.id));$('#save-status').textContent='已自动保存';return true;}
+ function flush(){clearTimeout(saveTimer);if(initial.blocked){warning(initial.warning);return false;}const result=S.save(local,state);if(!result.ok){warning(result.warning);return false;}lastStorageJSON=JSON.stringify(result.state);state.records=state.records.filter(r=>result.state.records.some(s=>s.id===r.id));state.exams=state.exams.filter(e=>result.state.exams.some(s=>s.id===e.id));state.challenges=result.state.challenges;$('#save-status').textContent='已自动保存';return true;}
  function save(immediate=false){state.updatedAt=Date.now();if(immediate)flush();else{clearTimeout(saveTimer);saveTimer=setTimeout(flush,250);}}
  function touch(r){r.updatedAt=Date.now();save();}
  function message(text,error=false){const n=$('#game-message');n.textContent=text;n.classList.toggle('error',error);}
@@ -537,7 +682,7 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
  };
  function loading(title,text){openModal('loading',title).append(el('span','spinner'),el('div','loading-state',text));footer.replaceChildren(button('取消，保留当前进度','close-modal','secondary full-width'));}
  async function generateNew(typeId,force=false){
-  if(!force){const unfinished=sortedRecords().find(r=>r.puzzle.type===typeId&&!r.examId&&!r.completedAt);if(unfinished){state.activeId=unfinished.id;enterPlay();return;}}
+  if(!force){const unfinished=sortedRecords().find(r=>r.puzzle.type===typeId&&r.puzzle.level===state.preferences.level&&!r.examId&&!r.completedAt);if(unfinished){state.activeId=unfinished.id;enterPlay();return;}}
   const op=++operation;loading('正在准备新题','马上就好…');
   try{const p=await worker.request('generate',{type:typeId,level:state.preferences.level,seed:uuid(),exclude:state.records.map(r=>r.puzzle.id)});if(op!==operation)return;const r=S.newRecord(p);state.records.push(r);state.activeId=r.id;state.activeExamId=null;closeModal(false);save(true);enterPlay();}
   catch(e){if(op!==operation)return;closeModal(false);toast(e.message);}
@@ -572,13 +717,14 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
  function enterPlay(){tickAt=Date.now();setPage('play');setFocus(matchMedia('(max-width:720px)').matches);save();}
  function renderHome(){
   $('#level-select').value=String(state.preferences.level);const slot=$('#continue-slot');slot.replaceChildren();const r=sortedRecords().find(x=>!x.completedAt&&!examFor(x)?.submittedAt);
+  const descriptions=['','','','更少直观线索，加入候选数组与区块排除。','复杂候选组合，可用单链反证。','优先筛选多步推理与分支反证题。四宫标准题的难度提升有限。'];$('#level-description').textContent=descriptions[state.preferences.level];$('#level-description').hidden=state.preferences.level<3;
   if(r){const banner=el('div','resume-banner'),text=el('div');text.append(el('strong','',`继续上次的${E.typeOf(r.puzzle.type).name}`),el('p','',`已填 ${r.values.filter((v,i)=>v&&!r.puzzle.givens[i]).length} 格 · ${date(r.updatedAt)}`));const b=button('继续练习','resume-record','primary');b.dataset.id=r.id;banner.append(text,b);slot.append(banner);}
   const list=$('#catalog');list.replaceChildren();const previews=JSON.parse($('#preview-data').textContent);
   E.TYPES.forEach((t,i)=>{
    const card=el('article','type-card'),row=el('div','type-card-body'),content=el('div','type-content'),head=el('div','type-card-head'),mini=el('div','type-preview'),info=el('div','type-info');
    head.append(el('div','type-card-label',`第 ${t.round+1} 局 · ${E.ROUND_PLANS[t.round].name}`),el('h2','',t.name));
    mini.append(buildBoard(previews[i],previews[i].givens,{mini:true}));
-   const completed=state.records.filter(r=>r.puzzle.type===t.id&&r.completedAt).length,unfinished=state.records.some(r=>r.puzzle.type===t.id&&!r.examId&&!r.completedAt);
+   const completed=state.records.filter(r=>r.puzzle.type===t.id&&r.completedAt).length,unfinished=state.records.some(r=>r.puzzle.type===t.id&&r.puzzle.level===state.preferences.level&&!r.examId&&!r.completedAt);
    info.append(el('p','type-focus',t.focus));if(completed)info.append(el('span','type-progress',`已完成 ${completed} 题`));
    content.append(head,info);row.append(content,mini);
    const foot=el('div','type-card-footer'),size=el('span','type-size',`${t.n}×${t.n} · 数字 1～${t.n}`),actions=el('div','type-actions'),b=button(unfinished?'继续练习':'开始练习','start-type','primary');
@@ -586,9 +732,10 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
   });
  }
  function renderNav(){const n=$('#type-nav');E.ROUND_PLANS.forEach((round,index)=>{n.append(el('div','nav-group',`${index+1} · ${round.name}`));E.TYPES.filter(t=>t.round===index).forEach(t=>{const b=button(t.name,'start-type','nav-type');b.dataset.type=t.id;n.append(b);});});const select=$('#play-type');E.TYPES.forEach(t=>{const o=el('option','',t.name);o.value=t.id;select.append(o);});}
+ function renderLevelOptions(){for(const id of ['level-select','exam-level-select','challenge-level']){const select=$('#'+id);E.LEVELS.forEach((name,i)=>{if(id==='challenge-level'&&i<3)return;const o=el('option','',name);o.value=i;select.append(o);});}}
  function renderPlay(wrong=[]){
   const r=record();if(!r)return;const p=r.puzzle,t=E.typeOf(p.type),exam=examFor(r),readonly=locked(r),playing=!!(exam&&!exam.submittedAt),focused=$('#board').contains(document.activeElement);
-  $('#puzzle-title').textContent=t.name;$('#puzzle-meta').textContent=`${p.n}×${p.n} · ${E.LEVELS[p.level]}`;$('#game-header-title').textContent=playing?'U8 模拟比赛':'小小数独家';$('#game-subtitle').textContent=readonly?'复习':'练习';$('#question-label').textContent=exam?`第 ${exam.ids.indexOf(r.id)+1} / ${exam.ids.length} 题`:'练习题';$('#level-tag').textContent=E.LEVELS[p.level];
+  $('#puzzle-title').textContent=t.name;$('#puzzle-meta').textContent=`${p.n}×${p.n} · ${E.LEVELS[p.level]}`;$('#game-header-title').textContent=exam?.challengeId?'厦门 U8 挑战赛':playing?'U8 模拟比赛':'小小数独家';$('#game-subtitle').textContent=readonly?'复习':'练习';$('#question-label').textContent=exam?`第 ${exam.ids.indexOf(r.id)+1} / ${exam.ids.length} 题`:'练习题';$('#level-tag').textContent=E.LEVELS[p.level];
   $('#play-type').value=p.type;$('#play-type').disabled=!!exam;$('#board').replaceChildren(buildBoard(p,r.values,{interactive:true,selected:r.selected,notes:r.notes,wrong}));if(focused)$(`#board [data-cell="${r.selected}"]`)?.focus({preventScroll:true});
   $('#selected-label').textContent=`${Math.floor(r.selected/p.n)+1} 行 · ${r.selected%p.n+1} 列${p.givens[r.selected]?' · 题目数字':''}`;$('#filled-label').textContent=`已填 ${r.values.filter((v,i)=>v&&!p.givens[i]).length}/${p.givens.filter(v=>!v).length}`;$('#chain-legend').hidden=!p.chains;
   const pad=$('#number-pad');pad.replaceChildren();pad.style.setProperty('--n',p.n);for(let i=1;i<=p.n;i++){const b=el('button','number-button',i);b.type='button';b.dataset.number=i;b.disabled=readonly;b.setAttribute('aria-label',`填入数字 ${i}`);pad.append(b);}
@@ -630,19 +777,41 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
   clear.addEventListener('click',()=>{clearTimeout(recognitionTimer);ctx.clearRect(0,0,canvas.width,canvas.height);strokes=[];placeholder.hidden=false;candidates.replaceChildren();label.textContent='写完选择数字，也可直接点选。';modalContext.digit=null;confirmButton.disabled=true;all.querySelectorAll('button').forEach(n=>n.setAttribute('aria-pressed','false'));});modalContext={digit:null,recordId:r.id,cell:r.selected};
  }
  function renderTimer(){const r=record(),e=examFor(r);if(!e)return;$('#exam-timer').textContent=e.submittedAt?'已结束':time(e.endsAt-Date.now());$('#exam-strip').classList.toggle('urgent',!e.submittedAt&&e.endsAt-Date.now()<60000);}
- async function startExam(round){
+ async function startExam(round,challenge=null){
   const ongoing=liveExam();if(ongoing){resumeExam(ongoing.id);toast('先继续当前进行中的一局，计时仍在进行。');return;}
-  const plan=E.ROUND_PLANS[round],types=plan.counts.flatMap(([t,count])=>Array(count).fill(t)),op=++operation,id='exam-'+uuid(),made=[];
-  loading('正在准备模拟赛',`正在准备 1 / ${types.length} 题…`);
-  try{for(let i=0;i<types.length;i++){body.querySelector('.loading-state').textContent=`正在准备 ${i+1} / ${types.length} 题…`;const p=await worker.request('generate',{type:types[i],level:state.preferences.level,seed:uuid(),exclude:[...state.records.map(r=>r.puzzle.id),...made.map(r=>r.puzzle.id)]});if(op!==operation)return;made.push(S.newRecord(p,id));}const now=Date.now(),exam={id,round,ids:made.map(r=>r.id),startedAt:now,endsAt:now+EXAM_DURATION_MS,submittedAt:null,reason:'manual'};state.records.push(...made);state.exams.push(exam);state.activeId=made[0].id;state.activeExamId=id;closeModal(false);save(true);enterPlay();}
+  const plan=E.ROUND_PLANS[round],types=plan.counts.flatMap(([t,count])=>Array(count).fill(t)),op=++operation,id='exam-'+uuid(),made=[],level=challenge?challenge.level:state.preferences.level;
+  loading(challenge?`挑战赛 · 准备第 ${round+1} 局`:'正在准备模拟赛',`正在准备 1 / ${types.length} 题…`);
+  try{for(let i=0;i<types.length;i++){body.querySelector('.loading-state').textContent=`正在准备 ${i+1} / ${types.length} 题…`;const p=await worker.request('generate',{type:types[i],level,seed:uuid(),exclude:[...state.records.map(r=>r.puzzle.id),...made.map(r=>r.puzzle.id)]});if(op!==operation)return;made.push(S.newRecord(p,id));}
+   const concurrent=liveExam();if(concurrent){closeModal(false);resumeExam(concurrent.id);return;}
+   if(challenge&&state.challenges.some(c=>c.id===challenge.id&&c.examIds.length!==round))throw Error('这一局已在另一页面开始，请返回模拟比赛继续。');
+   const now=Date.now(),exam={id,round,ids:made.map(r=>r.id),startedAt:now,endsAt:now+EXAM_DURATION_MS,submittedAt:null,reason:'manual'};
+   if(challenge){let saved=state.challenges.find(c=>c.id===challenge.id);if(!saved){saved=challenge;state.challenges.push(saved);}saved.examIds.push(id);exam.challengeId=saved.id;}
+   state.records.push(...made);state.exams.push(exam);state.activeId=made[0].id;state.activeExamId=id;closeModal(false);save(true);enterPlay();}
   catch(e){if(op!==operation)return;closeModal(false);toast(e.message);}
+ }
+ function startChallenge(id){
+  const ongoing=liveExam();if(ongoing){resumeExam(ongoing.id);return;}
+  const c=(id?state.challenges.find(x=>x.id===id):unfinishedChallenge())||{id:'challenge-'+uuid(),level:state.preferences.challengeLevel,createdAt:Date.now(),examIds:[]};
+  if(c.examIds.length>=3){setPage('exams');return;}
+  startExam(c.examIds.length,c);
  }
  function resumeExam(id){const e=state.exams.find(x=>x.id===id);if(!e)return;state.activeExamId=id;state.activeId=e.ids.find(rid=>state.records.find(r=>r.id===rid)?.values.some(v=>!v))||e.ids[0];enterPlay();}
  function requestSubmit(exam){if(exam.submittedAt){showReport(exam.id);return;}const unfinished=exam.ids.filter(id=>state.records.find(r=>r.id===id).values.some(v=>!v)).length;confirm('确认交卷',`${unfinished?`还有 ${unfinished} 题没有填完。`:''}交卷后本局计时结束，填写会锁定，可以查看答案和讲解。`,()=>{submitExam(exam,'manual');showReport(exam.id);},'交卷并查看报告');}
  function submitExam(exam,reason){if(exam.submittedAt)return;exam.submittedAt=Date.now();exam.reason=reason;exam.ids.forEach(id=>{const r=state.records.find(r=>r.id===id);if(r.values.every((v,i)=>v===r.puzzle.solution[i]))r.completedAt=exam.submittedAt;else r.wrongChecks=Math.max(1,r.wrongChecks);r.updatedAt=exam.submittedAt;});save(true);if(currentPage==='play')renderPlay();}
  function report(exam){const rs=exam.ids.map(id=>state.records.find(r=>r.id===id)),correct=rs.filter(r=>r.values.every((v,i)=>v===r.puzzle.solution[i])).length,cells=rs.reduce((sum,r)=>sum+r.values.filter((v,i)=>v&&v===r.puzzle.solution[i]&&!r.puzzle.givens[i]).length,0),total=rs.reduce((sum,r)=>sum+r.puzzle.givens.filter(v=>!v).length,0);return{records:rs,correct,cells,total};}
- function showReport(id){const e=state.exams.find(x=>x.id===id);if(!e)return;const result=report(e),b=openModal('report',`第 ${e.round+1} 局 · 训练报告`),summary=el('div','result-summary');summary.append(el('strong','',`整题正确 ${result.correct} / ${e.ids.length}`),el('p','',`空格填写正确率：${result.total?Math.round(result.cells/result.total*100):100}%（${result.cells}/${result.total}）`),el('p','',`${e.reason==='timeout'?'到时自动交卷':'主动交卷'} · 用时 ${duration(Math.min(e.endsAt-e.startedAt,e.submittedAt-e.startedAt))}`));b.append(summary);result.records.forEach((r,i)=>{const item=el('div','history-item'),text=el('div');text.append(el('h3','',`第 ${i+1} 题 · ${E.typeOf(r.puzzle.type).name}`),el('p','',r.completedAt?'整题正确':'待复习：有空格或填写不正确'));const view=button('复盘','resume-record','secondary compact');view.dataset.id=r.id;item.append(text,view);b.append(item);});}
- function renderExams(){const rounds=$('#rounds');rounds.replaceChildren();E.ROUND_PLANS.forEach((plan,i)=>{const card=el('article','round-card'),content=el('div'),actions=el('div','round-action');content.append(el('h2','',plan.name));plan.counts.forEach(([t,n])=>content.append(el('p','',`${E.typeOf(t).name} × ${n} 题`)));actions.append(el('div','round-meta',`${plan.counts.reduce((sum,x)=>sum+x[1],0)} 题 · ${EXAM_MINUTES} 分钟`));const ongoing=liveExam();const b=button(ongoing?'继续当前模拟局':'开始这一局',ongoing?'resume-exam':'start-exam','primary');if(ongoing)b.dataset.id=ongoing.id;else b.dataset.round=i;actions.append(b);card.append(el('div','round-number',i+1),content,actions);rounds.append(card);});const results=$('#exam-results');results.replaceChildren();const completed=state.exams.filter(e=>e.submittedAt).slice().reverse();if(completed.length)results.append(el('h2','section-title','之前的模拟'));completed.forEach(e=>{const r=report(e),item=el('div','history-item'),text=el('div');text.append(el('h3','',`第 ${e.round+1} 局 · ${E.ROUND_PLANS[e.round].name}`),el('p','',`整题正确 ${r.correct}/${e.ids.length} · ${date(e.submittedAt)}`));const b=button('训练报告','report','secondary compact');b.dataset.id=e.id;item.append(text,b);results.append(item);});}
+ function showReport(id){const e=state.exams.find(x=>x.id===id);if(!e)return;const result=report(e),challenge=challengeFor(e),b=openModal('report',`${challenge?'挑战赛 · ':''}第 ${e.round+1} 局 · 训练报告`),summary=el('div','result-summary');summary.append(el('strong','',`整题正确 ${result.correct} / ${e.ids.length}`),el('p','',`空格填写正确率：${result.total?Math.round(result.cells/result.total*100):100}%（${result.cells}/${result.total}）`),el('p','',`${e.reason==='timeout'?'到时自动交卷':'主动交卷'} · 用时 ${duration(Math.min(e.endsAt-e.startedAt,e.submittedAt-e.startedAt))}`));b.append(summary);result.records.forEach((r,i)=>{const item=el('div','history-item'),text=el('div');text.append(el('h3','',`第 ${i+1} 题 · ${E.typeOf(r.puzzle.type).name}`),el('p','',r.completedAt?'整题正确':'待复习：有空格或填写不正确'));const view=button('复盘','resume-record','secondary compact');view.dataset.id=r.id;item.append(text,view);b.append(item);});if(challenge){const active=state.exams.find(x=>x.challengeId===challenge.id&&!x.submittedAt),next=active?button(`继续第 ${active.round+1} 局`,'start-challenge','primary'):challenge.examIds.length<3?button(`开始第 ${challenge.examIds.length+1} 局`,'start-challenge','primary'):button('查看挑战赛总成绩','challenge-results','primary');next.dataset.id=challenge.id;footer.replaceChildren(button('返回做题','close-modal','secondary'),next);}}
+ function renderChallenges(){
+  const ongoing=unfinishedChallenge(),latest=ongoing||state.challenges.at(-1),select=$('#challenge-level'),start=$('.challenge-footer [data-action="start-challenge"]'),rounds=$('#challenge-rounds'),summary=$('#challenge-summary');
+  select.value=String(ongoing?ongoing.level:state.preferences.challengeLevel);select.disabled=!!ongoing;rounds.replaceChildren();start.textContent=ongoing?`继续第 ${Math.min(3,ongoing.examIds.length+(state.exams.find(e=>e.id===ongoing.examIds.at(-1))?.submittedAt?1:0))} 局`:'生成挑战赛';
+  E.ROUND_PLANS.forEach((plan,i)=>{const e=latest?state.exams.find(e=>e.id===latest.examIds[i]):null,row=el('div','challenge-round'),text=el('div');text.append(el('strong','',`第 ${i+1} 局 · ${plan.name}`),el('small','',plan.counts.map(([t,n])=>`${E.typeOf(t).name} ${n} 题`).join(' · ')));let status;
+   if(e?.submittedAt){status=button(`${report(e).correct}/${e.ids.length} · 复盘`,'report','text-button');status.dataset.id=e.id;}
+   else status=el('span','challenge-status',e?'进行中':latest?'未开始':`${plan.counts.reduce((s,x)=>s+x[1],0)} 题`);row.append(text,status);rounds.append(row);
+  });
+  summary.textContent=latest?challengeSummary(latest):'每局开始时随机出题，点击开始后计时。';
+  const history=$('#challenge-history');history.replaceChildren();state.challenges.slice().reverse().filter(c=>c!==ongoing&&c.examIds.length===3&&c.examIds.every(id=>state.exams.find(e=>e.id===id)?.submittedAt)).forEach((c,i)=>{if(!i)history.append(el('h2','section-title','挑战赛成绩'));const item=el('article','history-item'),content=el('div');content.append(el('h3','','厦门 U8 挑战赛 · '+E.LEVELS[c.level]),el('p','',challengeSummary(c)),el('p','',date(c.createdAt)));const actions=el('div','challenge-reviews');c.examIds.forEach((id,i)=>{const b=button(`第 ${i+1} 局`,'report','secondary compact');b.dataset.id=id;actions.append(b);});item.append(content,actions);history.append(item);});
+ }
+ function challengeSummary(c){const exams=c.examIds.map(id=>state.exams.find(e=>e.id===id)).filter(Boolean),done=exams.filter(e=>e.submittedAt),correct=done.reduce((sum,e)=>sum+report(e).correct,0);return `${E.LEVELS[c.level]} · 已交 ${done.length}/3 局 · 整题正确 ${correct}/24${done.length===3?' · 已完成':''}`;}
+ function renderExams(){renderChallenges();$('#exam-level-select').value=String(state.preferences.level);const rounds=$('#rounds');rounds.replaceChildren();E.ROUND_PLANS.forEach((plan,i)=>{const card=el('article','round-card'),content=el('div'),actions=el('div','round-action');content.append(el('h2','',plan.name));plan.counts.forEach(([t,n])=>content.append(el('p','',`${E.typeOf(t).name} × ${n} 题`)));actions.append(el('div','round-meta',`${plan.counts.reduce((sum,x)=>sum+x[1],0)} 题 · ${EXAM_MINUTES} 分钟`));const ongoing=liveExam();const b=button(ongoing?'继续当前模拟局':'开始这一局',ongoing?'resume-exam':'start-exam','primary');if(ongoing)b.dataset.id=ongoing.id;else b.dataset.round=i;actions.append(b);card.append(el('div','round-number',i+1),content,actions);rounds.append(card);});const results=$('#exam-results');results.replaceChildren();const completed=state.exams.filter(e=>e.submittedAt&&!e.challengeId).slice().reverse();if(completed.length)results.append(el('h2','section-title','之前的模拟'));completed.forEach(e=>{const r=report(e),item=el('div','history-item'),text=el('div');text.append(el('h3','',`第 ${e.round+1} 局 · ${E.ROUND_PLANS[e.round].name}`),el('p','',`整题正确 ${r.correct}/${e.ids.length} · ${date(e.submittedAt)}`));const b=button('训练报告','report','secondary compact');b.dataset.id=e.id;item.append(text,b);results.append(item);});}
  function renderProgress(){
   const stats=$('#progress-stats');stats.replaceChildren();const complete=state.records.filter(r=>r.completedAt),total=state.records.reduce((sum,r)=>sum+r.elapsed,0);const items=[['完成题目',complete.length+' 题','已检查或交卷且整题正确'],['累计练习',duration(total),'练习页在前台的时间'],['需要复习',state.records.filter(needsReview).length+' 题','借助提示、答案或出现错误']];items.forEach(([name,value,note])=>{const n=el('div','stat');n.title=note;n.append(el('small','',name),el('strong','',value));stats.append(n);});
   const filter=$('#history-filter').value,list=$('#history-list');list.replaceChildren();const rs=sortedRecords().filter(r=>filter==='all'||filter==='unfinished'&&!r.completedAt&&!examFor(r)?.submittedAt||filter==='completed'&&r.completedAt||filter==='review'&&needsReview(r));if(!rs.length)list.append(el('div','empty',filter==='all'?'还没有练习记录，先挑一道喜欢的题吧。':'这里暂时没有对应记录。'));
@@ -690,6 +859,8 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
    case 'new':case 'next':if(r&&!inExam(r)){if(modal.open)closeModal();generateNew(r.puzzle.type,true);}break;
    case 'repeat':repeat();break;
    case 'start-exam':startExam(Number(n.dataset.round));break;
+   case 'start-challenge':if(modal.open)closeModal();startChallenge(n.dataset.id);break;
+   case 'challenge-results':if(modal.open)closeModal();setPage('exams');break;
    case 'resume-exam':resumeExam(n.dataset.id);break;
    case 'exam-question':state.activeId=n.dataset.id;save();renderPlay();message('');break;
    case 'submit-exam':if(examFor(r))requestSubmit(examFor(r));break;
@@ -699,7 +870,8 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
    case 'import':$('#import-file').click();break;
   }
  });
- $('#level-select').addEventListener('change',e=>{state.preferences.level=Number(e.target.value);save();});
+ for(const id of ['level-select','exam-level-select'])$('#'+id).addEventListener('change',e=>{state.preferences.level=E.normalizeLevel(e.target.value);save();if(currentPage==='home')renderHome();else if(currentPage==='exams')renderExams();});
+ $('#challenge-level').addEventListener('change',e=>{state.preferences.challengeLevel=E.normalizeLevel(e.target.value);save();});
  $('#play-type').addEventListener('change',e=>{if(!examFor(record()))generateNew(e.target.value);});
  $('#history-filter').addEventListener('change',renderProgress);
  $('#import-file').addEventListener('change',e=>{importBackup(e.target.files?.[0]);e.target.value='';});
@@ -714,7 +886,7 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
  function checkTimeouts(){for(const exam of state.exams)if(!exam.submittedAt&&Date.now()>=exam.endsAt){submitExam(exam,'timeout');if(examFor(record())?.id===exam.id&&currentPage==='play'){if(modal.open)closeModal();showReport(exam.id);}else if(!document.hidden)toast('模拟比赛已到时交卷，可在模拟比赛中查看报告。');}}
  setInterval(()=>{const now=Date.now(),delta=Math.min(2000,Math.max(0,now-tickAt));tickAt=now;const r=record();if(!document.hidden&&currentPage==='play'&&r&&!locked(r)&&modalKind!=='loading'){r.elapsed+=delta;touch(r);}checkTimeouts();if(currentPage==='play')renderTimer();},1000);
  window.addEventListener('resize',scheduleLayout);if(window.ResizeObserver){const observer=new ResizeObserver(scheduleLayout);for(const node of [$('.site-header'),$('.play-sticky'),$('.solve-controls')])observer.observe(node);}
- renderNav();if(initial.warning)warning(initial.warning);checkTimeouts();const first=location.hash.slice(1);setPage(['home','exams','progress'].includes(first)?first:'home',false);flush();
+ renderNav();renderLevelOptions();if(initial.warning)warning(initial.warning);checkTimeouts();const first=location.hash.slice(1);setPage(['home','exams','progress'].includes(first)?first:'home',false);flush();
  window.__sudoku={getState:()=>state,engine:E,storage:S};
 })();
 </script>
